@@ -1,0 +1,9 @@
+*.pyc
+*∼
+*.egg-info
+*.mo
+*.egg
+*.db
+*.log
+flask
+.idea
