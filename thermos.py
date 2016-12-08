@@ -1,18 +1,26 @@
+import os
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
-
+from flask_sqlalchemy import SQLAlchemy
 from forms import BookmarkForm
 
 # @TODO for debug mode
 from logging import DEBUG
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '1Q'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'thermos.db')
+# sqlite:////home/mgu/Python/thermos/thermos-flask/thermos.db
+
+db = SQLAlchemy(app)
 
 # @TODO for debug mode
 app.logger.setLevel(DEBUG)
 
 bookmarks = []
+
 
 def store_bookmark(url, description):
     bookmarks.append(dict(
@@ -21,6 +29,7 @@ def store_bookmark(url, description):
         user = 'bukhonenko',
         date = datetime.utcnow()
     ))
+
 
 def new_bookmarks(num):
     return sorted(bookmarks, key=lambda bm: bm['date'], reverse=True)[:num]
@@ -34,6 +43,7 @@ class User:
     def initials(self):
         return '{}.{}.'.format(self.firstname[0], self.lastname[0])
 '''
+
 
 @app.route('/')
 @app.route('/index')
