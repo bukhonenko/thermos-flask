@@ -6,6 +6,7 @@ sqlalchemy-migrate
 flask-whooshalchemy
 flask-wtf
 flask-babel
+Flask-Script
 guess_language
 flipflop
 coverage

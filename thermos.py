@@ -2,10 +2,6 @@ import os
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-from forms import BookmarkForm
-
-# @TODO for debug mode
-from logging import DEBUG
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -13,42 +9,21 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '1Q'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'thermos.db')
 # sqlite:////home/mgu/Python/thermos/thermos-flask/thermos.db
-
 db = SQLAlchemy(app)
 
-# @TODO for debug mode
-app.logger.setLevel(DEBUG)
-
-bookmarks = []
+from forms import BookmarkForm
+import models
 
 
-def store_bookmark(url, description):
-    bookmarks.append(dict(
-        url = url,
-        description = description,
-        user = 'bukhonenko',
-        date = datetime.utcnow()
-    ))
-
-
-def new_bookmarks(num):
-    return sorted(bookmarks, key=lambda bm: bm['date'], reverse=True)[:num]
-
-'''
-class User:
-    def __init__(self, firstname, lastname):
-        self.firstname = firstname
-        self.lastname = lastname
-
-    def initials(self):
-        return '{}.{}.'.format(self.firstname[0], self.lastname[0])
-'''
+# Fake login
+def logged_user():
+    return models.User.query.filter_by(username='alex').first()
 
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html', new_bookmarks=new_bookmarks(5))
+    return render_template('index.html', new_bookmarks=models.Bookmark.newest(5))
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -57,10 +32,10 @@ def add():
     if form.validate_on_submit():
         url = form.url.data
         description = form.description.data
-        store_bookmark(url, description)
+        bm = models.Bookmark(user=logged_user(), url=url, description=description)
+        db.session.add(bm)
+        db.session.commit()
         flash('Stored bookmark "{}"'.format(url))
-        app.logger.debug('strored url: ' + url) # @TODO for debug mode
-        app.logger.debug(app.config) # @TODO for debug mode
         return redirect(url_for('index'))
     return render_template('add.html', form=form)
 

@@ -8,14 +8,18 @@ Thermos -- Welcome
      <article>
             <header>
                 <h1>Welcome</h1>
-                <p>This is a simple social bookmarking site. Pluralsight Flask fundamentals.</p>
+                <p>
+                    This is a simple social bookmarking site.
+                    <a href='pluralsight.com'>Pluralsight</a>
+                    Flask fundamentals.
+                </p>
             </header>
             <section>
                 <h2>Recently Added</h2>
                 {% if new_bookmarks %}
                     <ul>
                     {% for bm in new_bookmarks%}
-                        <li>{{ bm.user }} added <a href="{{ bm.url }}">{{ bm.description }}</a> </li>
+                        <li>{{ bm.user.username }} added <a href="{{ bm.url }}">{{ bm.description }}</a> </li>
                     {% endfor%}
                     </ul>
                 {% else %}
