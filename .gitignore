@@ -3,7 +3,7 @@
 *.egg-info
 *.mo
 *.egg
-*.db
+*.db*
 *.log
 flask
 .idea

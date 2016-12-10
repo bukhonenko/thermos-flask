@@ -11,7 +11,7 @@ def initdb():
     db.create_all()
     db.session.add(User(username='alex', email='alex@gmail.com'))
     db.session.add(User(username='luke', email='luke@gmail.com'))
-    db.session.commit( )
+    db.session.commit()
     print 'Initialized the database!'
 
 
